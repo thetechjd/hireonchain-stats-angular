@@ -1,0 +1,417 @@
+<div class="dashboard">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div class="header-content">
+        <div class="header-top">
+          <img src="assets/hireonchain.png" alt="HireOnChain" class="logo">
+          <h1 class="dashboard-title">ANALYTICS</h1>
+        </div>
+        <p class="dashboard-subtitle">Track and analyze job application statistics for HireOnChain in real-time</p>
+      </div>
+      
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Applications</div>
+          <div class="metric-value">{{ getTotalApplications() | number }}</div>
+        </div>
+       <!--  <div class="metric-card">
+          <div class="metric-label">Top Companies</div>
+          <div class="metric-value">{{ companyData.length | number }}</div>
+        </div> -->
+        <div class="metric-card">
+          <div class="metric-label">Unique Jobs</div>
+          <div class="metric-value">{{ topJobs.length | number }}</div>
+        </div>
+       <!--  <div class="metric-card">
+          <div class="metric-label">Active Sources</div>
+          <div class="metric-value">{{ sourceData.length | number }}</div>
+        </div> -->
+      </div>
+    </div>
+  
+    <!-- Rest of the template stays the same... -->
+  
+    <!-- Filters Panel -->
+    <div class="filters-panel">
+      <div class="filters-header">
+        <h2 class="filters-title">Filters</h2>
+        <button class="btn-clear" (click)="clearFilters()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Clear All
+        </button>
+      </div>
+  
+      <div class="filters-grid">
+        <!-- Date Range Presets -->
+        <div class="filter-group full-width">
+          <label class="filter-label">Time Period</label>
+          <div class="date-presets">
+            <button 
+              *ngFor="let preset of datePresets"
+              class="preset-btn"
+              (click)="setDatePreset(preset.days, preset.ytd, preset.all)">
+              {{ preset.label }}
+            </button>
+          </div>
+        </div>
+  
+        <!-- Custom Date Range -->
+        <div class="filter-group">
+          <label class="filter-label" for="from-date">From Date</label>
+          <input 
+            id="from-date"
+            type="date" 
+            class="filter-input"
+            [(ngModel)]="filters.from"
+            (ngModelChange)="onFilterChange()">
+        </div>
+  
+        <div class="filter-group">
+          <label class="filter-label" for="to-date">To Date</label>
+          <input 
+            id="to-date"
+            type="date" 
+            class="filter-input"
+            [(ngModel)]="filters.to"
+            (ngModelChange)="onFilterChange()">
+        </div>
+  
+        <!-- Interval -->
+        <div class="filter-group">
+          <label class="filter-label" for="interval">Time Interval</label>
+          <select 
+            id="interval"
+            class="filter-select"
+            [(ngModel)]="filters.interval"
+            (ngModelChange)="onFilterChange()">
+            <option value="hour">Hour</option>
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+  
+        <!-- Chart Limit -->
+        <div class="filter-group">
+          <label class="filter-label" for="limit">Results Limit</label>
+          <select 
+            id="limit"
+            class="filter-select"
+            [(ngModel)]="filters.limit"
+            (ngModelChange)="onFilterChange()">
+            <option [value]="5">Top 5</option>
+            <option [value]="10">Top 10</option>
+            <option [value]="15">Top 15</option>
+            <option [value]="20">Top 20</option>
+            <option [value]="25">Top 25</option>
+          </select>
+        </div>
+  
+        <!-- Text Filters -->
+        <div class="filter-group">
+          <label class="filter-label" for="company">Company Name</label>
+          <input 
+            id="company"
+            type="text" 
+            class="filter-input"
+            placeholder="Search company..."
+            [(ngModel)]="filters.companyName"
+            (ngModelChange)="onFilterChange()">
+        </div>
+  
+        <div class="filter-group">
+          <label class="filter-label" for="job-title">Job Title</label>
+          <input 
+            id="job-title"
+            type="text" 
+            class="filter-input"
+            placeholder="Search job title..."
+            [(ngModel)]="filters.jobTitle"
+            (ngModelChange)="onFilterChange()">
+        </div>
+  
+        <div class="filter-group">
+          <label class="filter-label" for="source">Source</label>
+          <input 
+            id="source"
+            type="text" 
+            class="filter-input"
+            placeholder="e.g., LinkedIn, Indeed..."
+            [(ngModel)]="filters.source"
+            (ngModelChange)="onFilterChange()">
+        </div>
+  
+        <div class="filter-group">
+          <label class="filter-label" for="location">Location</label>
+          <input 
+            id="location"
+            type="text" 
+            class="filter-input"
+            placeholder="e.g., New York, Remote..."
+            [(ngModel)]="filters.jobLocation"
+            (ngModelChange)="onFilterChange()">
+        </div>
+  
+        <div class="filter-group">
+          <label class="filter-label" for="tags">Tags (comma-separated)</label>
+          <input 
+            id="tags"
+            type="text" 
+            class="filter-input"
+            placeholder="e.g., remote, senior, tech..."
+            [(ngModel)]="filters.tagsAny"
+            (ngModelChange)="onFilterChange()">
+        </div>
+  
+        <!-- Boolean Filters -->
+        <div class="filter-group">
+          <label class="filter-label checkbox-label">
+            <input 
+              type="checkbox" 
+              class="filter-checkbox"
+              [(ngModel)]="filters.sponsored"
+              (ngModelChange)="onFilterChange()">
+            <span>Sponsored Jobs Only</span>
+          </label>
+        </div>
+  
+       <!--  <div class="filter-group">
+          <label class="filter-label checkbox-label">
+            <input 
+              type="checkbox" 
+              class="filter-checkbox"
+              [(ngModel)]="filters.native"
+              (ngModelChange)="onFilterChange()">
+            <span>Native Jobs Only</span>
+          </label>
+        </div> -->
+  
+        <!-- Salary Range Sliders -->
+        <div class="filter-group full-width">
+          <label class="filter-label">
+            Minimum Salary: {{ formatSalary(filters.salaryMin || 0) }}
+          </label>
+          <input 
+            type="range" 
+            class="filter-range"
+            [min]="salaryRange.min"
+            [max]="salaryRange.max"
+            [step]="salaryRange.step"
+            [value]="filters.salaryMin || 0"
+            (input)="onSalaryMinChange(+$any($event.target).value)">
+        </div>
+  
+        <div class="filter-group full-width">
+          <label class="filter-label">
+            Maximum Salary: {{ formatSalary(filters.salaryMax || salaryRange.max) }}
+          </label>
+          <input 
+            type="range" 
+            class="filter-range"
+            [min]="salaryRange.min"
+            [max]="salaryRange.max"
+            [step]="salaryRange.step"
+            [value]="filters.salaryMax || salaryRange.max"
+            (input)="onSalaryMaxChange(+$any($event.target).value)">
+        </div>
+      </div>
+    </div>
+  
+    <!-- Charts Grid -->
+    <div class="charts-container">
+      <!-- Timeseries Chart -->
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h3 class="chart-title">Applications Over Time</h3>
+          <div class="chart-loading" *ngIf="loading.timeseries">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <app-line-chart 
+            *ngIf="!loading.timeseries && timeseriesData.length > 0"
+            [data]="timeseriesData"
+            [color]="chartColors.primary">
+          </app-line-chart>
+          <div class="chart-empty" *ngIf="!loading.timeseries && timeseriesData.length === 0">
+            No data available for the selected filters
+          </div>
+        </div>
+      </div>
+  
+      <!-- Top Jobs Table -->
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h3 class="chart-title">Top Jobs by Applications</h3>
+          <div class="chart-loading" *ngIf="loading.topJobs">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <div class="table-wrapper" *ngIf="!loading.topJobs && topJobs.length > 0">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Company</th>
+                  <th>Job Title</th>
+                  <th class="text-right">Applications</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let job of topJobs; let i = index">
+                  <td>
+                    <span class="rank-badge" [class.top-3]="i < 3">{{ i + 1 }}</span>
+                  </td>
+                  <td class="font-medium">{{ job.companyName }}</td>
+                  <td>{{ job.jobTitle }}</td>
+                  <td class="text-right">
+                    <span class="count-badge">{{ job.count | number }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-empty" *ngIf="!loading.topJobs && topJobs.length === 0">
+            No jobs found for the selected filters
+          </div>
+        </div>
+      </div>
+  
+      <!-- Company Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Top Companies</h3>
+          <div class="chart-loading" *ngIf="loading.company">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <app-bar-chart 
+            *ngIf="!loading.company && companyData.length > 0"
+            [data]="companyData"
+            [color]="chartColors.primary">
+          </app-bar-chart>
+          <div class="chart-empty" *ngIf="!loading.company && companyData.length === 0">
+            No data available
+          </div>
+        </div>
+      </div>
+  
+      <!-- Job Title Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Top Job Titles</h3>
+          <div class="chart-loading" *ngIf="loading.jobTitle">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <app-bar-chart 
+            *ngIf="!loading.jobTitle && jobTitleData.length > 0"
+            [data]="jobTitleData"
+            [color]="chartColors.purple">
+          </app-bar-chart>
+          <div class="chart-empty" *ngIf="!loading.jobTitle && jobTitleData.length === 0">
+            No data available
+          </div>
+        </div>
+      </div>
+  
+      <!-- Source Distribution -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Application Sources</h3>
+          <div class="chart-loading" *ngIf="loading.source">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <app-pie-chart 
+            *ngIf="!loading.source && sourceData.length > 0"
+            [data]="sourceData"
+            [colors]="chartColors.gradient">
+          </app-pie-chart>
+          <div class="chart-empty" *ngIf="!loading.source && sourceData.length === 0">
+            No data available
+          </div>
+        </div>
+      </div>
+  
+      <!-- Location Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Top Locations</h3>
+          <div class="chart-loading" *ngIf="loading.location">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <app-bar-chart 
+            *ngIf="!loading.location && locationData.length > 0"
+            [data]="locationData"
+            [color]="chartColors.cyan">
+          </app-bar-chart>
+          <div class="chart-empty" *ngIf="!loading.location && locationData.length === 0">
+            No data available
+          </div>
+        </div>
+      </div>
+  
+      <!-- Sponsored vs Non-Sponsored -->
+<!--       <div class="chart-card small">
+        <div class="chart-header">
+          <h3 class="chart-title">Sponsored Jobs</h3>
+          <div class="chart-loading" *ngIf="loading.sponsored">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <app-donut-chart 
+            *ngIf="!loading.sponsored && sponsoredData.length > 0"
+            [data]="sponsoredData"
+            [colors]="[chartColors.success, '#666']">
+          </app-donut-chart>
+          <div class="chart-empty" *ngIf="!loading.sponsored && sponsoredData.length === 0">
+            No data available
+          </div>
+        </div>
+      </div> -->
+  
+      <!-- Native vs External -->
+     <!--  <div class="chart-card small">
+        <div class="chart-header">
+          <h3 class="chart-title">Native Jobs</h3>
+          <div class="chart-loading" *ngIf="loading.native">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <app-donut-chart 
+            *ngIf="!loading.native && nativeData.length > 0"
+            [data]="nativeData"
+            [colors]="[chartColors.warning, '#666']">
+          </app-donut-chart>
+          <div class="chart-empty" *ngIf="!loading.native && nativeData.length === 0">
+            No data available
+          </div>
+        </div>
+      </div> -->
+    </div>
+  <!-- Copyright Footer -->
+<footer class="dashboard-footer">
+    <div class="footer-content">
+      <p class="copyright">© {{ currentYear }} HireOnChain. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="https://hireonchain.com" target="_blank" rel="noopener">Website</a>
+        <span class="separator">•</span>
+        <a href="https://hireonchain.com/privacy" target="_blank" rel="noopener">Privacy</a>
+        <span class="separator">•</span>
+        <a href="https://hireonchain.com/terms" target="_blank" rel="noopener">Terms</a>
+      </div>
+    </div>
+  </footer>
+  </div>
