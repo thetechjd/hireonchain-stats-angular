@@ -15,7 +15,7 @@
           <div class="metric-label">Total Applications</div>
           <div class="metric-value">{{ getTotalApplications() | number }}</div>
         </div>
-       <!--  <div class="metric-card">
+        <!-- <div class="metric-card">
           <div class="metric-label">Top Companies</div>
           <div class="metric-value">{{ companyData.length | number }}</div>
         </div> -->
@@ -23,10 +23,36 @@
           <div class="metric-label">Unique Jobs</div>
           <div class="metric-value">{{ topJobs.length | number }}</div>
         </div>
-       <!--  <div class="metric-card">
+         <!-- <div class="metric-card">
           <div class="metric-label">Active Sources</div>
           <div class="metric-value">{{ sourceData.length | number }}</div>
         </div> -->
+
+        <div class="metric-card">
+          <div class="metric-label">Visits</div>
+
+          <div class="metric-info">
+            <div class="metric-value">{{ visitsTotal | number }}</div>
+
+            <div class="visits-countries" *ngIf="visitsCountries.length">
+              <div class="visits-title">Top visits by country</div>
+
+              <div class="visits-list">
+                <div class="country-pill" *ngFor="let c of visitsCountries | slice:0:3">
+                  <img
+                    class="flag-img"
+                    [src]="'https://flagcdn.com/24x18/' + c.countryCode.toLowerCase() + '.png'"
+                    [alt]="c.countryCode"
+                  />
+                  <span class="country-code">{{ c.countryCode }}</span>
+                  <span class="country-count">{{ c.count }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
   

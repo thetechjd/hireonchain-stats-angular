@@ -46,6 +46,8 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   sponsoredData: ChartDataPoint[] = [];
   nativeData: ChartDataPoint[] = [];
   topJobs: TopJob[] = [];
+  visitsTotal=0;
+  visitsCountries: { countryCode: string; count: number }[] = [];
   
   loading: LoadingState = {
     timeseries: false,
@@ -122,6 +124,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
     this.loadSponsoredChart();
     this.loadNativeChart();
     this.loadTopJobs();
+    this.getStatsInfo();
   }
 
   loadTimeseriesChart(): void {
@@ -319,5 +322,18 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
 
   getTotalApplications(): number {
     return this.timeseriesData.reduce((sum, d) => sum + d.count, 0);
+  }
+  getStatsInfo(){
+    this.apiService.getVisitsStats().subscribe({
+    next: (res) => {
+      this.visitsTotal = res.total || 0;
+      this.visitsCountries = res.countries || [];
+    },
+    error: (err) => {
+      console.error("Visits stats failed", err);
+      this.visitsTotal = 0;
+      this.visitsCountries = [];
+    },
+  });
   }
 }

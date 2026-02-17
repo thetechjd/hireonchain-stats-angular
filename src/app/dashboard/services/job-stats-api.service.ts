@@ -5,7 +5,8 @@ import { catchError, retry, timeout } from 'rxjs/operators';
 import { 
   ChartDataPoint, 
   TopJob, 
-  ChartFilters 
+  ChartFilters, 
+  VisitStats
 } from '../interfaces';
 
 @Injectable({
@@ -83,6 +84,10 @@ export class JobStatsApiService {
     });
     
     return params;
+  }
+
+  getVisitsStats() {
+    return this.http.get<VisitStats>(`${this.apiUrl}/visits/stats`);
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

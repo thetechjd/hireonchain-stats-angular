@@ -78,3 +78,8 @@ export interface ChartDataPoint {
     max: number;
     step: number;
   }
+
+  export interface VisitStats{
+    total:number;
+    countries :{countryCode:string,count:number}[]
+  }
