@@ -87,7 +87,7 @@ export class JobStatsApiService {
   }
 
   getVisitsStats() {
-    return this.http.get<VisitStats>(`${this.apiUrl}/visits/stats`);
+    return this.http.get<VisitStats>(`https://api.hireonchain.io/visits/stats`);
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
