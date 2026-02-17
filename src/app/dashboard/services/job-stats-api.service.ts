@@ -87,7 +87,7 @@ export class JobStatsApiService {
   }
 
   getVisitsStats() {
-    return this.http.get<VisitStats>(`http://localhost:6443/visits/stats`);
+    return this.http.get<VisitStats>(`${this.apiUrl}/visits/stats`);
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
