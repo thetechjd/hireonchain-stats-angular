@@ -90,6 +90,10 @@ export class JobStatsApiService {
     return this.http.get<VisitStats>(`https://api.hireonchain.io/visits/stats`);
   }
 
+  getUsersCount(){
+    return this.http.get<any>(`http://localhost:6443/user/count`)
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred';
     
