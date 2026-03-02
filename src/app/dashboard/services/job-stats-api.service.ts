@@ -91,7 +91,7 @@ export class JobStatsApiService {
   }
 
   getUsersCount(){
-    return this.http.get<any>(`http://localhost:6443/user/count`)
+    return this.http.get<any>(`https://api.hireonchain.io/user/count`)
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
