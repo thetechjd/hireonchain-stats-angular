@@ -63,7 +63,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   
   filters: ChartFilters = {
     interval: 'day',
-    limit: 10
+    limit: 10,  
   };
   
   datePresets: DatePreset[] = [
@@ -248,7 +248,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
 
   loadTopJobs(): void {
     this.loading.topJobs = true;
-    this.apiService.getTopJobs(this.filters)
+    this.apiService.getTopJobs({...this.filters, limit: 10000000})
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
