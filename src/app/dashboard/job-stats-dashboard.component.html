@@ -287,7 +287,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let job of topJobs; let i = index">
+                <tr *ngFor="let job of topJobs | slice:0:10; let i = index">
                   <td>
                     <span class="rank-badge" [class.top-3]="i < 3">{{ i + 1 }}</span>
                   </td>
