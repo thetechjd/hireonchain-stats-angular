@@ -40,6 +40,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   
   timeseriesData: TimeseriesDataPoint[] = [];
   companyData: ChartDataPoint[] = [];
+  viewsData: ChartDataPoint[] = [{key: 'testKey', bucket: 'testBucket', value:2}, {key: 'testKey2', bucket: 'testBucket', value:10}];
   jobTitleData: ChartDataPoint[] = [];
   sourceData: ChartDataPoint[] = [];
   locationData: ChartDataPoint[] = [];
@@ -53,6 +54,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   loading: LoadingState = {
     timeseries: false,
     company: false,
+    views: false,
     jobTitle: false,
     source: false,
     location: false,
@@ -119,6 +121,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   loadAllCharts(): void {
     this.loadTimeseriesChart();
     this.loadCompanyChart();
+    this.loadViewsChart();
     this.loadJobTitleChart();
     this.loadSourceChart();
     this.loadLocationChart();
@@ -162,6 +165,22 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
         error: () => {
           this.companyData = [];
           this.loading.company = false;
+        }
+      });
+  }
+
+  loadViewsChart(): void {
+    this.loading.views = true;
+    this.apiService.getViewsData(this.filters)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.viewsData = data;
+          this.loading.views = false;
+        },
+        error: () => {
+          this.companyData = [];
+          this.loading.views = false;
         }
       });
   }

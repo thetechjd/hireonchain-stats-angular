@@ -65,6 +65,7 @@ export interface ChartDataPoint {
   export interface LoadingState {
     timeseries: boolean;
     company: boolean;
+    views: boolean;
     jobTitle: boolean;
     source: boolean;
     location: boolean;

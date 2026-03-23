@@ -13,7 +13,7 @@ import {
   providedIn: 'root'
 })
 export class JobStatsApiService {
-  private readonly apiUrl = 'https://api.hireonchain.io/stats'; // Change this to your API URL
+  private readonly apiUrl = 'http://localhost:6443/stats'//'https://api.hireonchain.io/stats'; // Change this to your API URL
   private readonly timeout = 30000;
 
   constructor(private http: HttpClient) {}
@@ -39,6 +39,10 @@ export class JobStatsApiService {
 
   getCompanyData(filters: ChartFilters = {}): Observable<ChartDataPoint[]> {
     return this.getChartData('company', filters);
+  }
+
+  getViewsData(filters: ChartFilters = {}): Observable<ChartDataPoint[]> {
+    return this.getChartData('views', filters);
   }
 
   getJobTitleData(filters: ChartFilters = {}): Observable<ChartDataPoint[]> {
