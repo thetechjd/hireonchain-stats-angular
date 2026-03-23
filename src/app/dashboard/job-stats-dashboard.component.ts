@@ -48,6 +48,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   nativeData: ChartDataPoint[] = [];
   topJobs: TopJob[] = [];
   visitsTotal=0;
+  viewsTotal=0;
   visitsCountries: { countryCode: string; count: number }[] = [];
   userCount=0;
 
@@ -129,6 +130,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
     this.loadNativeChart();
     this.loadTopJobs();
     this.getStatsInfo();
+    this.getStatsViewsInfo();
     this.getUserCount()
   }
 
@@ -179,7 +181,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
           this.loading.views = false;
         },
         error: () => {
-          this.companyData = [];
+          this.viewsData = [];
           this.loading.views = false;
         }
       });
@@ -355,6 +357,19 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
       console.error("Visits stats failed", err);
       this.visitsTotal = 0;
       this.visitsCountries = [];
+    },
+  });
+  }
+
+  getStatsViewsInfo(){
+    this.apiService.getViewsStats().subscribe({
+    next: (res) => {
+      this.viewsTotal = res.total || 0;
+    },
+    error: (err) => {
+      console.error("Views stats failed", err);
+      this.viewsTotal = 0;
+
     },
   });
   }

@@ -94,6 +94,10 @@ export class JobStatsApiService {
     return this.http.get<VisitStats>(`https://api.hireonchain.io/visits/stats`);
   }
 
+  getViewsStats() {
+    return this.http.get<VisitStats>(`${this.apiUrl}/views/total`);
+  }
+
   getUsersCount(){
     return this.http.get<any>(`https://api.hireonchain.io/user/count`)
   }
