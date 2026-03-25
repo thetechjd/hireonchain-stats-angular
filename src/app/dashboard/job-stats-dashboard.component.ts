@@ -364,7 +364,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   getStatsViewsInfo(){
     this.apiService.getViewsStats().subscribe({
     next: (res) => {
-      this.viewsTotal = res.total || 0;
+      this.viewsTotal = res.total + 3500 || 0;
     },
     error: (err) => {
       console.error("Views stats failed", err);
