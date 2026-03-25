@@ -40,6 +40,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   
   timeseriesData: TimeseriesDataPoint[] = [];
   companyData: ChartDataPoint[] = [];
+  viewsData: ChartDataPoint[] = [{key: 'testKey', bucket: 'testBucket', value:2}, {key: 'testKey2', bucket: 'testBucket', value:10}];
   jobTitleData: ChartDataPoint[] = [];
   sourceData: ChartDataPoint[] = [];
   locationData: ChartDataPoint[] = [];
@@ -47,12 +48,14 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   nativeData: ChartDataPoint[] = [];
   topJobs: TopJob[] = [];
   visitsTotal=0;
+  viewsTotal=0;
   visitsCountries: { countryCode: string; count: number }[] = [];
   userCount=0;
 
   loading: LoadingState = {
     timeseries: false,
     company: false,
+    views: false,
     jobTitle: false,
     source: false,
     location: false,
@@ -119,6 +122,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   loadAllCharts(): void {
     this.loadTimeseriesChart();
     this.loadCompanyChart();
+    this.loadViewsChart();
     this.loadJobTitleChart();
     this.loadSourceChart();
     this.loadLocationChart();
@@ -126,6 +130,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
     this.loadNativeChart();
     this.loadTopJobs();
     this.getStatsInfo();
+    this.getStatsViewsInfo();
     this.getUserCount()
   }
 
@@ -162,6 +167,22 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
         error: () => {
           this.companyData = [];
           this.loading.company = false;
+        }
+      });
+  }
+
+  loadViewsChart(): void {
+    this.loading.views = true;
+    this.apiService.getViewsData(this.filters)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.viewsData = data;
+          this.loading.views = false;
+        },
+        error: () => {
+          this.viewsData = [];
+          this.loading.views = false;
         }
       });
   }
@@ -336,6 +357,19 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
       console.error("Visits stats failed", err);
       this.visitsTotal = 0;
       this.visitsCountries = [];
+    },
+  });
+  }
+
+  getStatsViewsInfo(){
+    this.apiService.getViewsStats().subscribe({
+    next: (res) => {
+      this.viewsTotal = res.total || 0;
+    },
+    error: (err) => {
+      console.error("Views stats failed", err);
+      this.viewsTotal = 0;
+
     },
   });
   }
