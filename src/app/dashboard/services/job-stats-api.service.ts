@@ -13,7 +13,7 @@ import {
   providedIn: 'root'
 })
 export class JobStatsApiService {
-  private readonly apiUrl = 'http://localhost:6443/stats'//'https://api.hireonchain.io/stats'; // Change this to your API URL
+  private readonly apiUrl = 'https://api.hireonchain.io/stats'; // Change this to your API URL 'http://localhost:6443/stats'//
   private readonly timeout = 30000;
 
   constructor(private http: HttpClient) {}
