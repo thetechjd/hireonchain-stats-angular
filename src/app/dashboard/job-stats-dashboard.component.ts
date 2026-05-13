@@ -49,6 +49,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
   topJobs: TopJob[] = [];
   visitsTotal=0;
   viewsTotal=0;
+  recommandedTotal=0;
   visitsCountries: { countryCode: string; count: number }[] = [];
   userCount=0;
 
@@ -131,6 +132,7 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
     this.loadTopJobs();
     this.getStatsInfo();
     this.getStatsViewsInfo();
+    this.getStatsRecommandedInfo();
     this.getUserCount()
   }
 
@@ -369,6 +371,19 @@ export class JobStatsDashboardComponent implements OnInit, OnDestroy {
     error: (err) => {
       console.error("Views stats failed", err);
       this.viewsTotal = 0;
+
+    },
+  });
+  }
+
+  getStatsRecommandedInfo(){
+    this.apiService.getRecommandedStats().subscribe({
+    next: (res) => {
+      this.recommandedTotal = res.total || 0;
+    },
+    error: (err) => {
+      console.error("Recommanded stats failed", err);
+      this.recommandedTotal = 0;
 
     },
   });
