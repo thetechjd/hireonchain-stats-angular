@@ -98,6 +98,10 @@ export class JobStatsApiService {
     return this.http.get<VisitStats>(`${this.apiUrl}/views/total`);
   }
 
+  getRecommandedStats() {
+    return this.http.get<VisitStats>(`${this.apiUrl}/recommanded/total`);
+  }
+
   getUsersCount(){
     return this.http.get<any>(`https://api.hireonchain.io/user/count`)
   }
